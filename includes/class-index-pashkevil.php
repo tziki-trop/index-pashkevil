@@ -123,7 +123,15 @@ class Index_Pashkevil {
 		require_once plugin_dir_path( dirname( __FILE__ ) ) . 'public/class-index-pashkevil-public.php';
 
 		$this->loader = new Index_Pashkevil_Loader();
+		require_once plugin_dir_path( dirname( __FILE__ ) ) . 'public/class-index-pashkevil-mail-temp.php';
+		require_once plugin_dir_path( dirname( __FILE__ ) ) . 'public/class-index-pashkevil-cpt.php';
+		require_once plugin_dir_path( dirname( __FILE__ ) ) . 'public/class-elementor-forn.php';
+		require_once plugin_dir_path( dirname( __FILE__ ) ) . 'public/class-menegge-user.php';
+		require_once plugin_dir_path( dirname( __FILE__ ) ) . 'public/class-menegge-elementor.php';
+		require_once plugin_dir_path( dirname( __FILE__ ) ) . 'public/class-set-accsecc.php';
+		require_once plugin_dir_path( dirname( __FILE__ ) ) . 'public/class-loud-mor-bis.php';
 
+		
 	}
 
 	/**

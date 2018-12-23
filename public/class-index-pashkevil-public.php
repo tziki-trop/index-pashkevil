@@ -12,7 +12,7 @@
 
 /**
  * The public-facing functionality of the plugin.
- *
+ *fdfd
  * Defines the plugin name, version, and two examples hooks for how to
  * enqueue the public-facing stylesheet and JavaScript.
  *
@@ -95,7 +95,7 @@ class Index_Pashkevil_Public {
 		 * between the defined hooks and the functions defined in this
 		 * class.
 		 */
-
+		wp_enqueue_script( 'loadmore_ajax', plugin_dir_url( __FILE__ ) .  'js//load-more-js.js', array('jquery') , $this->version, true );
 		wp_enqueue_script( $this->plugin_name, plugin_dir_url( __FILE__ ) . 'js/index-pashkevil-public.js', array( 'jquery' ), $this->version, false );
 
 	}

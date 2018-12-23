@@ -1,0 +1,27 @@
+{
+    "remotePath": "public_html/wp-content/plugins/index-pashkevil",
+    "host": "84.95.247.17",
+    "username": "admin@index.itech-websolutions.com",
+    "password": "ajT9zXfP8p",
+    "port": 21,
+    "secure": false,
+    "protocol": "ftp",
+    "uploadOnSave": false,
+    "passive": false,
+    "debug": false,
+    "privateKeyPath": null,
+    "passphrase": null,
+    "agent": null,
+    "allow": [],
+    "ignore": [
+        "\\.vscode",
+        "\\.git",
+        "\\.DS_Store"
+    ],
+    "generatedFiles": {
+        "extensionsToInclude": [
+            ""
+        ],
+        "path": ""
+    }
+}
