@@ -15,8 +15,7 @@
               if(parseInt(loadmore_params.canBeLoaded) == true && $(window).scrollTop() + $(window).height() > $(document).height() - parseInt(loadmore_params.bottomOffset)) {
 
              // if(  parseInt(loadmore_params.canBeLoaded) == true ){
-                 
-                  $("#loudmor").removeClass("nutactive");
+                 $("#laod_mor_spiner").css("display","block");
                   $.ajax({
                       url : loadmore_params.ajaxurl,
                       data:data,
@@ -27,8 +26,8 @@
                           loadmore_params.canBeLoaded = false; 
                       },
                       success:function(data){
-                        
-debugger;
+                        $("#laod_mor_spiner").css("display","none");
+   
                           if( data ) {
                                $(data).insertAfter($(".all_busienss").find(".one_bus").last());
                              // $('#content').find('.endofpost:last').append( data ); // where to insert posts

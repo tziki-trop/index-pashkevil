@@ -1,8 +1,16 @@
 (function( $ ) {
 	'use strict';
 	$( document ).ready(function() {
-		//<div class="one_bus" data-bus-id="<?php echo get_the_ID(); ?>" data-bus-type="<?php echo $type; ?>"><?php
-
+		elementorFrontend.hooks.addAction( 'frontend/element_ready/widget', function( $scope ,jq) {
+			debugger;
+			if ( $scope.data( 'shake' ) ){
+				$scope.shake();
+			}
+		} );
+		if(typeof acf.data != "undefined"){
+			$('.acf-taxonomy-field').find("select").attr('data-placeholder', 'בחר');
+			acf.data.select2L10n.searching = "מחפש..";
+		}
 		$(document).delegate(".read_mor", "click", function(e) {
 		//$(".read_mor").one('click', read_mor_cliclk);
 		read_mor_cliclk(e);

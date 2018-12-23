@@ -2,3 +2,17 @@
  * All of the CSS for your public-facing functionality should be
  * included in this file.
  */
+ .acf-field--post-title label{
+     visibility: hidden;
+ }
+ .acf-field--post-title label::before{
+     content: "שם העסק";
+    visibility: visible;
+}
+.acf-error-message p{
+    visibility: hidden;
+}
+.acf-error-message p::before{
+    content: "זהו שדה חובה, אנא מלא אותו";
+   visibility: visible;
+}

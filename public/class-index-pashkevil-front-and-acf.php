@@ -10,6 +10,7 @@ use Elementor\Repeater;
 use Elementor\Modules\DynamicTags\Module as TagsModule;
 use ElementorPro\Base\Base_Widget;
 use Donations\Widgets\Helpers;
+use DOMDocument;
 use WP_Query;
 if ( ! defined( 'ABSPATH' ) ) exit; // Exit if accessed directly
 class TZT_Acf_Front_And_Widget extends Widget_Base {
@@ -161,16 +162,92 @@ public function get_name() {
                         'selectors' => ['{{WRAPPER}} .acf-input' => 'color: {{VALUE}}',],
                     ]
                         );
+                        $this->end_controls_section(); 
+
+                        $this->start_controls_section(
+					
+                            'submit',
+                            [
+                                'label' => __( 'submit', 'client_to_google_sheet' ),
+                                'tab' => \Elementor\Controls_Manager::TAB_STYLE,
+                            ]
+                        );
+                      
+                     $this->add_group_control(
+
+                        Group_Control_Typography::get_type(),
+                        [
+                            'name' => 'submit_typography',
+                            'label' => __( 'Typography', 'client_to_google_sheet' ),
+                            'scheme' => Scheme_Typography::TYPOGRAPHY_1,
+                                'selector' => "{{WRAPPER}} .acf-form-submit input",
+                        ]
+                    );
+                    $this->add_control(
+                        'submit_color',
+                        [
+                            'label' => __( 'Color', 'client_to_google_sheet' ),
+                            'type' => \Elementor\Controls_Manager::COLOR,
+                            'default' => '#000',
+                            'selectors' => ['{{WRAPPER}} .acf-form-submit input' => 'color: {{VALUE}}',],
+                        ]
+                            );
+                            $this->add_control(
+                                'submit_bg_color',
+                                [
+                                    'label' => __( 'background color', 'client_to_google_sheet' ),
+                                    'type' => \Elementor\Controls_Manager::COLOR,
+                                    'default' => '#000',
+                                    'selectors' => ['{{WRAPPER}} .acf-form-submit input' => 'background-color: {{VALUE}}!important',],
+                                ]
+                                    );
+                                    $this->add_group_control(
+                                        Group_Control_Border::get_type(),
+                                        [
+                                            'name' => 'submit_border',
+                                            'label' => __( 'Border', 'plugin-domain' ),
+                                            'selector' => '{{WRAPPER}} .acf-form-submit input',
+                                        ]
+                                    );
+                                    $this->add_control(
+                                        'border_radus_submit',
+                                        [
+                                            'label' => __( 'border radius', 'plugin-domain' ),
+                                            'type' => Controls_Manager::DIMENSIONS,
+                                            'size_units' => [ 'px'],
+                                            'selectors' => [
+                                                '{{WRAPPER}} .acf-form-submit input' => 'border-radius: {{TOP}}{{UNIT}} {{RIGHT}}{{UNIT}} {{BOTTOM}}{{UNIT}} {{LEFT}}{{UNIT}};',
+                                            ],
+                                        ]
+                                    );
+                     
+     
                      
                 //acf-input
 		 }
   protected function render() {
+   /* $dom = new DOMDocument();
+    $dom->loadHTML("<html><body><div class='test'>hello</div><div>bye</div></body></html>");
+    $nodes = $dom->getElementsByTagName("*");
+    global $shortcode_tags;
+    foreach($shortcode_tags as $code => $function)
+    {
+        ?>
+            <tr><td>[<?php echo $code; ?>]</td></tr>
+        <?php
+    }
+    foreach ($nodes as $node) {
+       // var_dump($node);
+        echo $node->getAttribute("class")."<br />";
+    } */
     $settings = $this->get_settings_for_display();
 
     if($settings['fild_group_menual'] != "true"){
+    if(!current_user_can( 'administrator' )){
     $user = (int)get_field( 'owner', $settings['pid'] );
     if(get_current_user_id() != $user)
     return '';
+    }
     $fild_grups = array(11);
     $type =  get_post_meta( $settings['pid'] , 'business_type' , true ); 
     if($type === "pro")

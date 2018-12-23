@@ -270,10 +270,10 @@ use WP_Query;
             register_post_type( 'business',
          array(
       'labels' => array(
-        'name' => __( 'business', 'donat'),
-        'singular_name' => __( 'business', 'donat'),
-        'add_new' => __('Add business','donat'),      
-          'add_new_item' => __('Add business','donat')
+        'name' => __( 'business','index-pashkevil'),
+        'singular_name' => __( 'business','index-pashkevil'),
+        'add_new' => __('Add business','index-pashkevil'),      
+          'add_new_item' => __('Add business','index-pashkevil')
       ),
         'show_in_menu' => true,
         'show_ui' => true,
@@ -282,25 +282,30 @@ use WP_Query;
       'supports' => array('title','editor')
           )
         );
+        
         $labels = array(
-            'name' => __( 'zones', 'taxonomy general name' ),
-     'singular_name' => __( 'zones', 'taxonomy singular name' ),
-        'search_items' =>  __( 'Search zones' ),
-        'popular_items' => __( 'Popular zones' ),
-        'all_items' => __( 'All zones' ),
-        'parent_item' => null,
-        'parent_item_colon' => null,
-        'edit_item' => __( 'Edit zones' ), 
-        'update_item' => __( 'Update zones' ),
-        'update_item' => __( 'Update zones' ),
-        'add_new_item' => __( 'Add New zones' ),
-                'new_item_name' => __( 'New zones Name' ),
-     'separate_items_with_commas' => __( 'Separate zoness with commas' ),
-      'add_or_remove_items' => __( 'Add or remove zones' ),
-     'choose_from_most_used' => __( 'Choose from the most used zones' ),
-      'menu_name' => __( 'zones' ),
-  ); 
-         register_taxonomy('zones','business',array(
+            'name'                       => _x( 'zones', 'Taxonomy General Name', 'index-pashkevil' ),
+            'singular_name'              => _x( 'zones', 'Taxonomy Singular Name', 'index-pashkevil' ),
+            'menu_name'                  => __( 'zones', 'index-pashkevil' ),
+            'all_items'                  => __( 'All zones', 'index-pashkevil' ),
+            'parent_item'                => __( 'Parent zones', 'index-pashkevil' ),
+            'parent_item_colon'          => __( 'Parent zones:', 'index-pashkevil' ),
+            'new_item_name'              => __( 'New zones Name', 'index-pashkevil' ),
+            'add_new_item'               => __( 'Add New zones', 'index-pashkevil' ),
+            'edit_item'                  => __( 'Edit zones', 'index-pashkevil' ),
+            'update_item'                => __( 'Update zones', 'index-pashkevil' ),
+            'view_item'                  => __( 'View zones', 'index-pashkevil' ),
+            'separate_items_with_commas' => __( 'Separate zones with commas', 'index-pashkevil' ),
+            'add_or_remove_items'        => __( 'Add or remove zones', 'index-pashkevil' ),
+            'choose_from_most_used'      => __( 'Choose from the most used', 'index-pashkevil' ),
+            'popular_items'              => __( 'Popular zones', 'index-pashkevil' ),
+            'search_items'               => __( 'Search zones', 'index-pashkevil' ),
+            'not_found'                  => __( 'Not Found', 'index-pashkevil' ),
+            'no_terms'                   => __( 'No zones', 'index-pashkevil' ),
+            'items_list'                 => __( 'zones list', 'index-pashkevil' ),
+            'items_list_navigation'      => __( 'zones list navigation', 'index-pashkevil' ),
+        ); 
+    register_taxonomy('zones','business',array(
 	'public' => true,
     'hierarchical' => true,
     'labels' => $labels,
@@ -311,24 +316,29 @@ use WP_Query;
 	 'show_admin_column' => true
   ));
   
-        $labels = array(
-    'name' => __( 'tags', 'taxonomy general name' ),
-    'singular_name' => __( 'tags', 'taxonomy singular name' ),
-    'search_items' =>  __( 'Search tags' ),
-    'popular_items' => __( 'Popular tags' ),
-    'all_items' => __( 'All tags' ),
-    'parent_item' => null,
-    'parent_item_colon' => null,
-    'edit_item' => __( 'Edit tags' ), 
-    'update_item' => __( 'Update tags' ),
-    'update_item' => __( 'Update tags' ),
-    'add_new_item' => __( 'Add New tags' ),
-    'new_item_name' => __( 'New tags Name' ),
-    'separate_items_with_commas' => __( 'Separate tagss with commas' ),
-    'add_or_remove_items' => __( 'Add or remove tags' ),
-    'choose_from_most_used' => __( 'Choose from the most used tags' ),
-    'menu_name' => __( 'tags' ),
-  ); 
+  $labels = array(
+    'name'                       => _x( 'tags', 'Taxonomy General Name', 'index-pashkevil' ),
+    'singular_name'              => _x( 'tags', 'Taxonomy Singular Name', 'index-pashkevil' ),
+    'menu_name'                  => __( 'tags', 'index-pashkevil' ),
+    'all_items'                  => __( 'All tags', 'index-pashkevil' ),
+    'parent_item'                => __( 'Parent tags', 'index-pashkevil' ),
+    'parent_item_colon'          => __( 'Parent tags:', 'index-pashkevil' ),
+    'new_item_name'              => __( 'New tags Name', 'index-pashkevil' ),
+    'add_new_item'               => __( 'Add New tags', 'index-pashkevil' ),
+    'edit_item'                  => __( 'Edit tags', 'index-pashkevil' ),
+    'update_item'                => __( 'Update tags', 'index-pashkevil' ),
+    'view_item'                  => __( 'View tags', 'index-pashkevil' ),
+    'separate_items_with_commas' => __( 'Separate tags with commas', 'index-pashkevil' ),
+    'add_or_remove_items'        => __( 'Add or remove tags', 'index-pashkevil' ),
+    'choose_from_most_used'      => __( 'Choose from the most used', 'index-pashkevil' ),
+    'popular_items'              => __( 'Popular tags', 'index-pashkevil' ),
+    'search_items'               => __( 'Search tags', 'index-pashkevil' ),
+    'not_found'                  => __( 'Not Found', 'index-pashkevil' ),
+    'no_terms'                   => __( 'No tags', 'index-pashkevil' ),
+    'items_list'                 => __( 'tags list', 'index-pashkevil' ),
+    'items_list_navigation'      => __( 'tags list navigation', 'index-pashkevil' ),
+);
+
     register_taxonomy('tags','business',array(
 	'public' => true,
     'hierarchical' => true,
