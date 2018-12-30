@@ -1,12 +1,7 @@
 (function( $ ) {
 	'use strict';
 	$( document ).ready(function() {
-		elementorFrontend.hooks.addAction( 'frontend/element_ready/widget', function( $scope ,jq) {
-			debugger;
-			if ( $scope.data( 'shake' ) ){
-				$scope.shake();
-			}
-		} );
+		
 		if(typeof acf.data != "undefined"){
 			$('.acf-taxonomy-field').find("select").attr('data-placeholder', 'בחר');
 			acf.data.select2L10n.searching = "מחפש..";

@@ -17,7 +17,6 @@ public function __construct(){
         add_action('add_user_to_index', [$this,'add_user'], 10, 2);
         add_action('update_user_to_index', [$this,'update_user'], 10, 2);
         add_action('login_user_to_index', [$this,'login_user'], 10, 2);
-
      }
      public function user_query($query){
              $meta =  array(
@@ -47,8 +46,8 @@ public function __construct(){
             )
         );
      }
-     public function remove_admin_bar() {
-        if (!current_user_can('administrator') && !is_admin()) {
+    public function remove_admin_bar() {
+       if (!current_user_can('administrator') && !is_admin()) {
           show_admin_bar(false);
      }
      }
@@ -105,7 +104,7 @@ public function __construct(){
        // $ajax_handler->add_error_message("error");
 
         $send = $record->get_form_settings( 'form_id' );
-        if($send === "add_user"){
+            if($send === "add_user"){
         //return;   
         $raw_fields = $record->get( 'fields' );
         $fields = [];   
@@ -128,14 +127,14 @@ public function __construct(){
         if(is_wp_error($user)){
         $ajax_handler->add_error_message($user->get_error_message());
         return;
-        }
+          }
         do_action('send_castum_email_temp','user_reg',$fields[ 'email' ],$fields);
         wp_clear_auth_cookie();
         wp_set_current_user ( $user );
         wp_set_auth_cookie  ( $user );
         $ajax_handler->add_response_data( 'redirect_url', get_permalink(51));
-    }
-    if($send === "update_user"){
+      }
+              if($send === "update_user"){
         $raw_fields = $record->get( 'fields' );
         $fields = [];   
         foreach ( $raw_fields as $id => $field ) {
@@ -153,8 +152,8 @@ public function __construct(){
         return;
         }
     
-    }
-    if($send === "login_user"){
+         }
+             if($send === "login_user"){
         $raw_fields = $record->get( 'fields' );
         $fields = [];   
         foreach ( $raw_fields as $id => $field ) {
@@ -169,7 +168,7 @@ public function __construct(){
         wp_set_current_user ( $user->ID );
         wp_set_auth_cookie  ( $user->ID ); 
         $ajax_handler->add_response_data( 'redirect_url', get_permalink(109));
-    }
+         }
     
 
         
