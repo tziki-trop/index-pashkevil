@@ -11,8 +11,8 @@
                   'query': loadmore_params.posts,
                   'page' : loadmore_params.current_page
               };
-              
-              if(parseInt(loadmore_params.canBeLoaded) == true && $(window).scrollTop() + $(window).height() > $(document).height() - parseInt(loadmore_params.bottomOffset)) {
+           //   debugger;
+              if(loadmore_params.canBeLoaded == true && $(window).scrollTop() + $(window).height() > $(document).height() - parseInt(loadmore_params.bottomOffset)) {
 
              // if(  parseInt(loadmore_params.canBeLoaded) == true ){
                  $("#laod_mor_spiner").css("display","block");

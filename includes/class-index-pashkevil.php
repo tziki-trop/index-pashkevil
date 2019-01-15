@@ -130,8 +130,8 @@ class Index_Pashkevil {
 		require_once plugin_dir_path( dirname( __FILE__ ) ) . 'public/class-menegge-elementor.php';
 		require_once plugin_dir_path( dirname( __FILE__ ) ) . 'public/class-set-accsecc.php';
 		require_once plugin_dir_path( dirname( __FILE__ ) ) . 'public/class-loud-mor-bis.php';
+		require_once plugin_dir_path( dirname( __FILE__ ) ) . 'public/class-add-fild-to-woo.php';
 
-		
 	}
 
 	/**

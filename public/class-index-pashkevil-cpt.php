@@ -12,7 +12,9 @@ use WP_Query;
      }
     private function set_business_types(){
         $this->types['regiler'] =   __( 'regiler', 'carousel_elementor' );
-		$this->types['pro'] =  __( 'pro', 'carousel_elementor' );
+        $this->types['pro'] =  __( 'pro', 'carousel_elementor' );
+        $this->types['premium'] =  __( 'premium', 'carousel_elementor' );
+
 
     } 
     public function get_business_types( $types = [] ){
@@ -39,6 +41,11 @@ use WP_Query;
     add_action( 'display_one_bis', [$this,'display_one_bis'] );
     add_action( 'make_bis_pro', [$this,'make_bis_pro'],10,2 );
     add_action( 'make_bis_regiler', [$this,'make_bis_regiler'],10,1 );
+    add_filter('acf/validate_save_post' , [ $this,'add_user_cpt'], 10, 0 );
+
+    //add_action( 'admin_post_nopriv', [$this,'add_user_cpt'],10,1 );
+
+    
     }
     public function make_bis_pro($post_id,$exp = false){
         update_post_meta($post_id, 'business_type', 'pro');
@@ -90,7 +97,9 @@ use WP_Query;
         $ajax_handler->add_error_message($user->get_error_message());
         return;
         }
-        $ajax_handler->add_response_data( 'redirect_url', get_permalink($pid));
+        $url = add_query_arg( 'business_id', $pid , get_permalink(332) );
+
+        $ajax_handler->add_response_data( 'redirect_url', $url);
 
     }
 
@@ -102,16 +111,76 @@ use WP_Query;
 
            }
     }
-    public function acf_pre_save( $post_id ) {
-       $args = array( 
-           'post_status' => 'publish',
-           'ID' => $post_id,
-       
+    public function add_user_cpt( ){
+     //   if( ! defined( 'DOING_AJAX' ) || ! DOING_AJAX )
+       // return;
+      //  echo json_encode(array('ststus' => defined( 'DOING_AJAX' ) ));
+//exit;
+        if(!isset($_POST['acf']['field_5c3dc6dc93b5e']))
+        return;
+        $user_data = array(
+            'email' => $_POST['acf']['field_5c3dc6dc93b5e'],
+            'pas' => $_POST['acf']['field_5c3dc72e06c5e'],
+            'name' => $_POST['acf']['field_5c3dc701b0363']
         );
+        $user = apply_filters('add_user_acf', $user_data);
+        if($user['status'] === false){
+            echo json_encode(array('ststus' => "error","field" => "5c3dc6dc93b5e","dis"=>"בעיה" ));
+           // echo "error";
+            exit;
+          //  acf_add_validation_error( '', 'משתמש זה כבר קיים, נסה להתחבר במקום ' );
+
+         // $url = add_query_arg(array('updated' => false,'formerror'=> urlencode( $user['error'] )),wp_get_referer());
+         // wp_safe_redirect($url);
+        //  exit;      
+       // return;
+        }
+     //   return  $post_id;
+
+    }
+    public function acf_pre_save( $post_id ) {
+        if(get_post_status($post_id) === "publish")
+        return $post_id;
+      /*  $user_data = array(
+            'email' => $_POST['acf']['field_5c3dc6dc93b5e'],
+            'pas' => $_POST['acf']['field_5c3dc72e06c5e'],
+            'name' => $_POST['acf']['field_5c3dc701b0363']
+        );
+     
+        $user = apply_filters('add_user_acf', $user_data);
+        if($user['status'] === false){
+            wp_delete_post($post_id);
+          $url = add_query_arg(array('updated' => false,'formerror'=> urlencode( $user['error'] )),wp_get_referer());
+          wp_safe_redirect($url);
+          exit;      
+        return $post_id;
+        }
+        else{
+            $args = array( 
+                'post_status' => 'publish',
+                'ID' => $post_id,
+                'meta_input' => array(
+                       'owner' =>(int)$user['user_id'],
+                   )
+            
+             );  
+         */    
+        $args = array( 
+            'post_status' => 'publish',
+            'ID' => $post_id,
+            'meta_input' => array(
+                   'owner' =>get_current_user_id(),
+               )
+        
+         );
+       do_action('reg_cpts');
+       wp_update_post($args);   
+     //   }
+     
      //   echo get_post_meta( $post_id , 'business_type' , true ); 
 
-       do_action('reg_cpts');
-       wp_update_post($args);
+    //   do_action('reg_cpts');
+    //   wp_update_post($args);
         return $post_id;
     }
 
@@ -249,9 +318,9 @@ use WP_Query;
      $value = get_post_meta( $post->ID, 'business_type', true ); 
      $test = get_post_meta( $post->ID, 'test', true ); 
      $test1 = get_field_object('field_5c103c824c00a', $post->ID);
-         var_dump($test);
+      //   var_dump($test);
         ?>
-        <p>business type</p>
+        <p>סוג העסק</p>
         <select id="business_type" name="business_type">
             <?php foreach($this->types as $option => $name){ ?>
                 <option value="<?php echo $option; ?>"<?=$value == $option ? ' selected="selected"' : '';?>><?php echo $name; ?></option>

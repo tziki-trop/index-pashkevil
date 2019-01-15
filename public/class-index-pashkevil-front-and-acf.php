@@ -60,7 +60,10 @@ public function get_name() {
 				'multiple' => true,
 				'options' => [
 					'11'  => __( 'regiler', 'plugin-domain' ),
-					'17' => __( 'pro', 'plugin-domain' ),				],
+                    '17' => __( 'pro', 'plugin-domain' ),	
+                    '515' => __( 'user', 'plugin-domain' ),			
+		
+                	],
                 'default' => [ '11'],
                 'condition' => [
 					'fild_group_menual' => 'true',
@@ -275,6 +278,18 @@ public function get_name() {
       $settungs_acf['post_title'] = true;
       if($settings['pid'] != "")
       $settungs_acf['post_id'] = $settings['pid'];
+      else{
+        $args = array(
+            'post_status' => "pendine_approvel",
+            'post_title' => "הקלד את שם העסק שלך כאן",
+            'post_type' => 'business',
+            'meta_input' => array(
+             //   'owner' => get_current_user_id(),
+                'business_type' => 'regiler',
+            )
+            );
+        $settungs_acf['post_id'] = wp_insert_post($args);
+      }
       $settungs_acf['uploader'] = 'basic';
       if($settings['url'] != '')
       $settungs_acf['return'] = $settings['url'];

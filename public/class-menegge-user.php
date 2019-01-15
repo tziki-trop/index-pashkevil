@@ -17,6 +17,57 @@ public function __construct(){
         add_action('add_user_to_index', [$this,'add_user'], 10, 2);
         add_action('update_user_to_index', [$this,'update_user'], 10, 2);
         add_action('login_user_to_index', [$this,'login_user'], 10, 2);
+        add_filter('get_user_bus',  [$this,'get_user_bus']);
+        add_filter('add_user_acf', [$this,'add_user_acf'], 10, 1);    
+
+     }
+     public function add_user_acf($fields){
+        if(email_exists($fields[ 'email' ])){
+            return array('status' => false,'error'=>"משתמש קיים על מייל זה, נסה להתחבר במקום" );
+           // $ajax_handler->add_error_message("user exsist");
+          //  return;
+            }
+        $userarray = array(
+                'user_pass' => $fields[ 'pas' ],
+                'user_email' => $fields[ 'email' ],
+                'user_login' => $fields[ 'email' ],
+                'role' =>  'owner' 
+            );
+        $user = wp_insert_user($userarray);
+            //$user = wp_create_user($fields[ 'email' ], $fields[ 'pas' ], $fields[ 'email' ]);
+        if(is_wp_error($user)){
+            return array('status' => false,'error'=>$user->get_error_message());
+          //  $ajax_handler->add_error_message($user->get_error_message());
+          //  return;
+            }
+            do_action('send_castum_email_temp','user_reg',$fields[ 'email' ],$fields);
+            wp_clear_auth_cookie();
+            wp_set_current_user ( $user );
+            wp_set_auth_cookie  ( $user );
+            return array('status' => true,'user_id'=>$user);
+     //   $ajax_handler->add_response_data( 'redirect_url', get_permalink(51));
+     }
+     public function get_user_bus(){
+        $bus = false;
+        $args = array(
+            'post_type'    => 'business',
+            'meta_key'     => 'owner',
+            'meta_value'   => get_current_user_id(), // change to how "event date" is stored
+            'meta_compare' => 'LIKE',
+        );
+     //   return $args;
+        $user_post_loop = new WP_Query( $args );
+        if ($user_post_loop->have_posts() ) :
+            $bus[''] = "בחר עסק";
+
+            while ( $user_post_loop->have_posts() ) : $user_post_loop->the_post();
+            $bus[get_the_ID()] = get_the_title();
+        endwhile;   
+        else :
+        endif; 
+        wp_reset_query();
+      
+       return $bus;
      }
      public function user_query($query){
              $meta =  array(
@@ -41,6 +92,7 @@ public function __construct(){
                 'edit_posts'   => false,
                 'delete_posts' => false, 
                 'edit_private_pages' => true,
+                'upload_files' => true,
                 'edit_posts' => true,
                 'read_private_posts' => true,// Use false to explicitly deny
             )
