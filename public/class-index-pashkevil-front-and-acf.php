@@ -280,7 +280,7 @@ public function get_name() {
       $settungs_acf['post_id'] = $settings['pid'];
       else{
         $args = array(
-            'post_status' => "pendine_approvel",
+            'post_status' => "trash",
             'post_title' => "הקלד את שם העסק שלך כאן",
             'post_type' => 'business',
             'meta_input' => array(
@@ -289,7 +289,9 @@ public function get_name() {
             )
             );
         $settungs_acf['post_id'] = wp_insert_post($args);
-      }
+        wp_schedule_single_event(strtotime("+5 minutes"), 'delete_empty_cpt', $settungs_acf['post_id'] );
+  //     do_action('delete_empty_cpt', $settungs_acf['post_id'] );
+      }  
       $settungs_acf['uploader'] = 'basic';
       if($settings['url'] != '')
       $settungs_acf['return'] = $settings['url'];

@@ -42,11 +42,17 @@ use WP_Query;
     add_action( 'make_bis_pro', [$this,'make_bis_pro'],10,2 );
     add_action( 'make_bis_regiler', [$this,'make_bis_regiler'],10,1 );
     add_filter('acf/validate_save_post' , [ $this,'add_user_cpt'], 10, 0 );
-
+     add_action('delete_empty_cpt',[$this,'delete_cpt'],10,1);
     //add_action( 'admin_post_nopriv', [$this,'add_user_cpt'],10,1 );
 
     
     }
+
+    public function delete_cpt($post_id){
+        update_post_meta($post_id,'name' , "tst");
+      //  if(get_post_status((int)$post_id) != "publish")
+        wp_delete_post((int)$post_id,true);
+     }
     public function make_bis_pro($post_id,$exp = false){
         update_post_meta($post_id, 'business_type', 'pro');
         if($exp != false)
@@ -125,14 +131,14 @@ use WP_Query;
         );
         $user = apply_filters('add_user_acf', $user_data);
         if($user['status'] === false){
-            echo json_encode(array('ststus' => "error","field" => "5c3dc6dc93b5e","dis"=>"בעיה" ));
+           // echo json_encode(array('ststus' => "error","field" => "5c3dc6dc93b5e","dis"=>"בעיה" ));
            // echo "error";
-            exit;
+         //   exit;
           //  acf_add_validation_error( '', 'משתמש זה כבר קיים, נסה להתחבר במקום ' );
 
-         // $url = add_query_arg(array('updated' => false,'formerror'=> urlencode( $user['error'] )),wp_get_referer());
-         // wp_safe_redirect($url);
-        //  exit;      
+          $url = add_query_arg(array('updated' => false,'formerror'=> urlencode( $user['error'] )),wp_get_referer());
+          wp_safe_redirect($url);
+          exit;      
        // return;
         }
      //   return  $post_id;
@@ -418,6 +424,39 @@ use WP_Query;
     'rewrite' => array( 'slug' => 'tags' ),
 	 'show_admin_column' => true
     ));
+    $labels = array(
+        'name'                       => _x( 'b_category', 'Taxonomy General Name', 'index-pashkevil' ),
+        'singular_name'              => _x( 'b_category', 'Taxonomy Singular Name', 'index-pashkevil' ),
+        'menu_name'                  => __( 'b_category', 'index-pashkevil' ),
+        'all_items'                  => __( 'All b_category', 'index-pashkevil' ),
+        'parent_item'                => __( 'Parent b_category', 'index-pashkevil' ),
+        'parent_item_colon'          => __( 'Parent b_category:', 'index-pashkevil' ),
+        'new_item_name'              => __( 'New b_category Name', 'index-pashkevil' ),
+        'add_new_item'               => __( 'Add New b_category', 'index-pashkevil' ),
+        'edit_item'                  => __( 'Edit b_category', 'index-pashkevil' ),
+        'update_item'                => __( 'Update b_category', 'index-pashkevil' ),
+        'view_item'                  => __( 'View b_category', 'index-pashkevil' ),
+        'separate_items_with_commas' => __( 'Separate b_category with commas', 'index-pashkevil' ),
+        'add_or_remove_items'        => __( 'Add or remove b_category', 'index-pashkevil' ),
+        'choose_from_most_used'      => __( 'Choose from the most used', 'index-pashkevil' ),
+        'popular_items'              => __( 'Popular b_category', 'index-pashkevil' ),
+        'search_items'               => __( 'Search b_category', 'index-pashkevil' ),
+        'not_found'                  => __( 'Not Found', 'index-pashkevil' ),
+        'no_terms'                   => __( 'No b_category', 'index-pashkevil' ),
+        'items_list'                 => __( 'b_category list', 'index-pashkevil' ),
+        'items_list_navigation'      => __( 'b_category list navigation', 'index-pashkevil' ),
+    );
+    
+        register_taxonomy('b_category','business',array(
+        'public' => true,
+        'hierarchical' => true,
+        'labels' => $labels,
+        'show_ui' => true,
+        'update_count_callback' => '_update_post_term_count',
+        'query_var' => true,
+        'rewrite' => array( 'slug' => 'b_category' ),
+         'show_admin_column' => true
+        ));
     register_post_status('pendine_approvel' , array(
         'label'                     => 'empty',
         'public'                    => false,

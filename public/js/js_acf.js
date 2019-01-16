@@ -1,7 +1,7 @@
 var form_submited = false;
 (function( $ ) {
 	'use strict';
-	$(document).ready(function () {
+/*	$(document).ready(function () {
 		var postID = acf.get('post_id');
 	
 		$("#submit_acf_form a").click(function (e) { 
@@ -36,7 +36,7 @@ var form_submited = false;
 
 
 	});
-
+*/
 	function submitACF_AJAX(form) {
 	//	debugger;
 		var data = new FormData(form);
