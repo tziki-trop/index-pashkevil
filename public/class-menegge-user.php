@@ -81,6 +81,8 @@ public function __construct(){
             //$query->set( 'post_author', get_current_user_id() );
               
               $query->set( 'meta_query', $meta );
+              $query->set( 'post_status', 'any' );
+
     }
      public function register_role(){
 

@@ -27,22 +27,25 @@
 		if(this_element.hasClass("activ")){
 			this_element.removeClass("activ");
 			var main = this_element.closest(".one_bus");
-			var height = main.find(".extendet_worrper").outerHeight();
+			//var height = main.find(".extendet_worrper").outerHeight();
+			var height =	main.attr("data-extend_h");
+
 				main.find("section").first().animate({
 					height: "-="+height
 				  }, 300, function() {
 					main.find(".extendet_worrper").css("display","none");
 					//this_element.one('click', read_mor_cliclk);
-					this_element.find("i").removeClass("fa-arrow-up");
-					this_element.find("i").addClass("fa-arrow-down");
+					this_element.find("i").removeClass("fa-angle-up");
+					this_element.find("i").addClass("fa-angle-down");
 				  });
 
 		}
 		else{ 
 		this_element.attr("data-louding","true");
 		debugger;     
-		this_element.find("i").removeClass("fa-arrow-down");
-		this_element.find("i").addClass("fa-spinner fa-spin");
+		this_element.find("i").removeClass("fa-angle-down");
+		this_element.find("i").addClass("fa-spinner fa-spin spin_loud_more");
+		
 		if(this_element.attr("data-louded") === "true"){
 			show_mor(this_element);
 		}
@@ -86,11 +89,12 @@
 			$("<div class='extendet_worrper' style='display: none;'>"+data.data+"</div>").insertAfter( section);
 		}  
 		var height = main.find(".extendet_worrper").outerHeight();
+		main.attr("data-extend_h",height);
 		main.find("section").first().animate({
 			height: "+="+height
 		  }, 300, function() {
 			main.find(".extendet_worrper").css("display","block");
-			this_element.find("i").addClass("fa-arrow-up");
+			this_element.find("i").addClass("fa-angle-up");
 			this_element.find("i").removeClass("fa-spinner fa-spin");
 			this_element.addClass("activ");
 			this_element.attr("data-louding","false");

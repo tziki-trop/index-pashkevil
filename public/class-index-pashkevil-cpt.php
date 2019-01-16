@@ -6,6 +6,8 @@ use WP_Query;
  class Business {
     protected $types = [];
     protected $dynamicData = [];
+    protected $user;
+
     public function __construct(){
         $this->set_business_types();
         $this->add_wp_actions();
@@ -110,18 +112,20 @@ use WP_Query;
     }
 
     public function acf_save_data( $post_id ){
-         if(isset($_SESSION['owner'])) {
-         update_post_meta($post_id, 'owner', $_SESSION['owner']);
-         unset($_SESSION['owner']);
+       //  if(isset($_SESSION['owner'])) {
+       //  update_post_meta($post_id, 'owner', $_SESSION['owner']);
+        // unset($_SESSION['owner']);
         //  wp_redirect(get_permalink($post_id));  
 
-           }
+       //    }
     }
     public function add_user_cpt( ){
      //   if( ! defined( 'DOING_AJAX' ) || ! DOING_AJAX )
        // return;
       //  echo json_encode(array('ststus' => defined( 'DOING_AJAX' ) ));
 //exit;
+        if(is_admin())
+        return;
         if(!isset($_POST['acf']['field_5c3dc6dc93b5e']))
         return;
         $user_data = array(
@@ -141,44 +145,53 @@ use WP_Query;
           exit;      
        // return;
         }
+       // if(!session_id()) {
+       //     session_start();
+      //  }
+     // $this->user= $user['user_id'];
+            $_SESSION['owner_new'] = $user['user_id'];
+          //  var_dump($user);
+          //  wp_die();
+          //  echo $user['user_id'];
+           // wp_die();
+
      //   return  $post_id;
 
     }
     public function acf_pre_save( $post_id ) {
         if(get_post_status($post_id) === "publish")
-        return $post_id;
-      /*  $user_data = array(
-            'email' => $_POST['acf']['field_5c3dc6dc93b5e'],
-            'pas' => $_POST['acf']['field_5c3dc72e06c5e'],
-            'name' => $_POST['acf']['field_5c3dc701b0363']
-        );
+        return $post_id; 
+         // update_post_meta(994,'description' , get_current_user_id());
+        //  update_post_meta(994,'description' , $_SESSION['owner_new']);
+    
      
-        $user = apply_filters('add_user_acf', $user_data);
-        if($user['status'] === false){
-            wp_delete_post($post_id);
-          $url = add_query_arg(array('updated' => false,'formerror'=> urlencode( $user['error'] )),wp_get_referer());
-          wp_safe_redirect($url);
-          exit;      
-        return $post_id;
-        }
-        else{
-            $args = array( 
-                'post_status' => 'publish',
-                'ID' => $post_id,
-                'meta_input' => array(
-                       'owner' =>(int)$user['user_id'],
-                   )
-            
-             );  
-         */    
-        $args = array( 
+         $email = $_POST['acf']['field_5c3dc6dc93b5e'];
+        // var_dump($_POST);
+        // var_dump($email);
+
+         $user =  get_user_by( "email", $email );
+        // var_dump($user);
+         var_dump($user->ID);
+         $args = array( 
             'post_status' => 'publish',
             'ID' => $post_id,
             'meta_input' => array(
-                   'owner' =>get_current_user_id(),
-               )
-        
+                 'owner' => $user->ID,
+             )
+          
          );
+        // wp_die();
+//update_post_meta($post_id, 'owner', $user->ID);
+//var_dump($post_id);
+//wp_die();
+         //update_field('owner', $user->ID, $post_id); 
+        // update_field('owner', $this->user, $post_id); 
+
+         
+        // echo $post_id;
+        // wp_die();
+        // update_post_meta((int)$post_id,'owner' , $_SESSION['owner']);
+
        do_action('reg_cpts');
        wp_update_post($args);   
      //   }
