@@ -19,14 +19,13 @@ public function __construct(){
         add_action('login_user_to_index', [$this,'login_user'], 10, 2);
         add_filter('get_user_bus',  [$this,'get_user_bus']);
         add_filter('add_user_acf', [$this,'add_user_acf'], 10, 1);    
+      //  add_filter('add_user_acf', [$this,'add_user_acf'], 10, 1);    
 
      }
      public function add_user_acf($fields){
-        if(email_exists($fields[ 'email' ])){
-            return array('status' => false,'error'=>"משתמש קיים על מייל זה, נסה להתחבר במקום" );
-           // $ajax_handler->add_error_message("user exsist");
-          //  return;
-            }
+        if(email_exists($fields[ 'email' ]))
+        return array('status' => false,'error'=>"משתמש קיים על מייל זה, נסה להתחבר במקום" );
+            
         $userarray = array(
                 'user_pass' => $fields[ 'pas' ],
                 'user_email' => $fields[ 'email' ],
@@ -34,18 +33,10 @@ public function __construct(){
                 'role' =>  'owner' 
             );
         $user = wp_insert_user($userarray);
-            //$user = wp_create_user($fields[ 'email' ], $fields[ 'pas' ], $fields[ 'email' ]);
         if(is_wp_error($user)){
             return array('status' => false,'error'=>$user->get_error_message());
-          //  $ajax_handler->add_error_message($user->get_error_message());
-          //  return;
-            }
-            do_action('send_castum_email_temp','user_reg',$fields[ 'email' ],$fields);
-            wp_clear_auth_cookie();
-            wp_set_current_user ( $user );
-            wp_set_auth_cookie  ( $user );
-            return array('status' => true,'user_id'=>$user);
-     //   $ajax_handler->add_response_data( 'redirect_url', get_permalink(51));
+       }  
+         return array('status' => true,'user_id'=>$user);
      }
      public function get_user_bus(){
         $bus = false;

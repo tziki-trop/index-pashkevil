@@ -136,10 +136,10 @@ public function on_init(){
  register_post_type( 'mail_temp',
     array(
       'labels' => array(
-        'name' => __( 'mail_temp', 'donat'),
-        'singular_name' => __( 'mail_temp', 'donat'),
-        'add_new' => __('Add mail_temp','donat'),      
-          'add_new_item' => __('Add mail_temp','donat')
+        'name' => __( 'mail_temp', 'index-pashkevil'),
+        'singular_name' => __( 'mail_temp', 'index-pashkevil'),
+        'add_new' => __('Add mail_temp','index-pashkevil'),      
+          'add_new_item' => __('Add mail_temp','index-pashkevil')
       ),
         'show_in_menu' => true,
         'show_ui' => true,

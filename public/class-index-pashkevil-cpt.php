@@ -35,21 +35,63 @@ use WP_Query;
     add_filter('acf/fields/google_map/api', [ $this,'my_acf_google_map_api']);
     add_action( 'wp_ajax_get_business',  [ $this,'get_business'] );
     add_action( 'wp_ajax_nopriv_get_business',  [ $this,'get_business' ]);
-  //  add_action( 'elementor_pro/forms/validation', [ $this,'send_email_to_client'],10,2 ); 
     add_filter('acf/pre_save_post' , [ $this,'acf_pre_save'], 10, 1 );
-   // add_filter( 'wp_insert_post_empty_content', [$this,'disable_save'], 999999, 2 );
-  // add_action('acf/save_post', [$this,'acf_save_data'], 20,1);
-   // add_action( 'save_post', [$this,'acf_save_data'] );
+    add_action('acf/save_post',[ $this,'after_acf_save'], 20);
     add_action( 'display_one_bis', [$this,'display_one_bis'] );
     add_action( 'make_bis_pro', [$this,'make_bis_pro'],10,2 );
     add_action( 'make_bis_regiler', [$this,'make_bis_regiler'],10,1 );
-    add_filter('acf/validate_save_post' , [ $this,'add_user_cpt'], 10, 0 );
+    add_action('acf/validate_save_post' , [ $this,'add_user_cpt'], 10, 0 );
      add_action('delete_empty_cpt',[$this,'delete_cpt'],10,1);
     //add_action( 'admin_post_nopriv', [$this,'add_user_cpt'],10,1 );
 
     
     }
+    public function after_acf_save($post_id){
+        if (strpos(wp_get_referer(), 'wp-admin') !== false) {
+            acf_reset_validation_errors();
+          return;
+        }  
+    $userarray = array(
+        'user_pass' => $_POST['acf']['field_5c3dc72e06c5e'],
+        'user_email' => $_POST['acf']['field_5c3dc6dc93b5e'],
+        'user_login' => $_POST['acf']['field_5c3dc6dc93b5e'],
+        'role' =>  'owner' 
+    );
+    $user_pass = $_POST['acf']['field_5c3dc72e06c5e'];
+    $user_email = $_POST['acf']['field_5c3dc6dc93b5e'];
+  //  $user_login = $_POST['acf']['field_5c3dc6dc93b5e'];
 
+
+   // $acf_nonce = $_POST['acf_nonce'];
+   // $_POST['acf_nonce'] = 
+    $user = wp_insert_user($userarray);
+  //  global $wpdb;
+   // $compacted = compact( 'user_pass', 'user_email');
+    // $data = wp_unslash( $compacted );
+   // $wpdb->insert( $wpdb->users, $data );              
+   //  $user = (int) $wpdb->insert_id;
+   // if ( is_wp_error($user) )  {
+   // } 
+  //  else {
+  //   $_POST['acf_nonce'] = $acf_nonce;
+  //  }
+    $aut = wp_generate_password();
+    update_user_meta( $user, 'loginonse', $aut );
+    update_post_meta($post_id, 'owner', $user) ;
+    wp_clear_auth_cookie();
+    wp_set_current_user ( $user );
+    wp_set_auth_cookie  (  $user );
+    //$URL = "http://index.itech-websolutions.com/my-account/";
+    $url =  add_query_arg( array("user_id" => $user , "user_aut" => $aut , "bis" => $post_id  ), get_permalink(1225));
+   // var_dump($URL);
+   // wp_die();
+    wp_safe_redirect($url);
+  //  wp_redirect($url);
+//wp_die();
+       exit;
+
+
+    }  
     public function delete_cpt($post_id){
         update_post_meta($post_id,'name' , "tst");
       //  if(get_post_status((int)$post_id) != "publish")
@@ -111,21 +153,13 @@ use WP_Query;
 
     }
 
-    public function acf_save_data( $post_id ){
-       //  if(isset($_SESSION['owner'])) {
-       //  update_post_meta($post_id, 'owner', $_SESSION['owner']);
-        // unset($_SESSION['owner']);
-        //  wp_redirect(get_permalink($post_id));  
-
-       //    }
-    }
-    public function add_user_cpt( ){
-     //   if( ! defined( 'DOING_AJAX' ) || ! DOING_AJAX )
-       // return;
-      //  echo json_encode(array('ststus' => defined( 'DOING_AJAX' ) ));
-//exit;
-        if(is_admin())
-        return;
+ 
+    public function add_user_cpt(){
+      //  if(wp_get_referer())
+        if (strpos(wp_get_referer(), 'wp-admin') !== false) {
+            acf_reset_validation_errors();
+            return;
+        }
         if(!isset($_POST['acf']['field_5c3dc6dc93b5e']))
         return;
         $user_data = array(
@@ -133,73 +167,32 @@ use WP_Query;
             'pas' => $_POST['acf']['field_5c3dc72e06c5e'],
             'name' => $_POST['acf']['field_5c3dc701b0363']
         );
-        $user = apply_filters('add_user_acf', $user_data);
-        if($user['status'] === false){
-           // echo json_encode(array('ststus' => "error","field" => "5c3dc6dc93b5e","dis"=>"בעיה" ));
-           // echo "error";
-         //   exit;
-          //  acf_add_validation_error( '', 'משתמש זה כבר קיים, נסה להתחבר במקום ' );
 
-          $url = add_query_arg(array('updated' => false,'formerror'=> urlencode( $user['error'] )),wp_get_referer());
+        if(email_exists($user_data[ 'email' ])){
+          $url = add_query_arg(array('updated' => false,'formerror'=> urlencode( "משתמש קיים על מייל זה, נסה להתחבר במקום" )),wp_get_referer());
           wp_safe_redirect($url);
           exit;      
        // return;
         }
-       // if(!session_id()) {
-       //     session_start();
-      //  }
-     // $this->user= $user['user_id'];
-            $_SESSION['owner_new'] = $user['user_id'];
-          //  var_dump($user);
-          //  wp_die();
-          //  echo $user['user_id'];
-           // wp_die();
+       // acf_reset_validation_errors();
 
-     //   return  $post_id;
 
     }
     public function acf_pre_save( $post_id ) {
         if(get_post_status($post_id) === "publish")
         return $post_id; 
-         // update_post_meta(994,'description' , get_current_user_id());
-        //  update_post_meta(994,'description' , $_SESSION['owner_new']);
-    
      
-         $email = $_POST['acf']['field_5c3dc6dc93b5e'];
-        // var_dump($_POST);
-        // var_dump($email);
-
-         $user =  get_user_by( "email", $email );
-        // var_dump($user);
-         var_dump($user->ID);
+         //var_dump($user->ID);
          $args = array( 
             'post_status' => 'publish',
-            'ID' => $post_id,
-            'meta_input' => array(
-                 'owner' => $user->ID,
-             )
-          
+            'ID' => $post_id,     
          );
-        // wp_die();
-//update_post_meta($post_id, 'owner', $user->ID);
-//var_dump($post_id);
-//wp_die();
-         //update_field('owner', $user->ID, $post_id); 
-        // update_field('owner', $this->user, $post_id); 
-
-         
-        // echo $post_id;
-        // wp_die();
-        // update_post_meta((int)$post_id,'owner' , $_SESSION['owner']);
-
        do_action('reg_cpts');
-       wp_update_post($args);   
-     //   }
-     
-     //   echo get_post_meta( $post_id , 'business_type' , true ); 
-
-    //   do_action('reg_cpts');
-    //   wp_update_post($args);
+       wp_update_post($args); 
+       $email = $_POST['acf']['field_5c3dc6dc93b5e'];
+       $user =  get_user_by( "email", $email );
+       update_post_meta($post_id, 'owner', $user->ID) ;
+     //  do_action('acf/save_post', $post_id);
         return $post_id;
     }
 

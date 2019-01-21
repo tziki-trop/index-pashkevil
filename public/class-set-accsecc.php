@@ -47,7 +47,18 @@ use WP_Query;
             $vars = array('new_business_added' => true);  
             $url = add_query_arg($vars,get_permalink(self::ACCOUNT_PAGE));
             wp_redirect($url);  
-        }   
-    }
+        }
+        if(isset($_GET['user_aut']))  {
+         $aut =    get_user_meta($_GET['user_id'], 'loginonse', true);
+         if($_GET['user_aut'] === $aut){
+            update_user_meta( $user, 'loginonse', '' );
+
+            wp_clear_auth_cookie();
+           wp_set_current_user ( (int) $_GET['user_id'] );
+           wp_set_auth_cookie  ( (int) $_GET['user_id'] );
+         }
+ 
+        }
+     }
 }   
 new BusinessAccseccClass();
