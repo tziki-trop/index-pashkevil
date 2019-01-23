@@ -6,7 +6,57 @@
 			$('.acf-taxonomy-field').find("select").attr('data-placeholder', 'בחר');
 			acf.data.select2L10n.searching = "מחפש..";
 		}
+      //  $("#testcontainer").on("submit", ".frm_add", function (event){
+    $(document).delegate("form", "submit", function(e) {
+		if($(e.target).closest("form").attr("id") != "lead_to_client")
+        return;
+      //  var filds = {};
+		var form = $(e.target).closest("form");
+		form.find(".elementor-button-text").append("<i class=\"fa fa-spinner fa-spin\"></i>");
+       var filds = {action : "l_t_c"};
+        $.each($(e.target).closest("form").find("input"), function( index, fild ) {
+        var name = $(fild).attr("name");
+        filds[name] = $(fild).val();
+      //  alert( index + ": " + value );
+        });
+       // filds['action'] = 'l_t_c';
+        debugger;
+     console.log('test');
+     e.preventDefault();
+    // alert('test');
+     /* $.ajax function will go here to save row */
+  		$.ajax({
+			type: 'POST',
+			 dataType: 'json',
+		 crossDomain: true,
+			url: "/wp-admin/admin-ajax.php",
+			
+			data:  //action: 'l_t_c',
+                   filds
+				//id: id,
+				//type: type,
+				//nons: nons,	
+			,       
+			success: function (data) {
+				if(data[0] === true){
+					form.find("input").val('');
+					form.find("input").attr('value','');
+					form.find(".fa-spinner").remove();
+				}
+				//if(data.status === "seccsee"){
+					debugger;
+
+				//	show_mor(this_element,data);
+		
+				//}       
+					//this_element.closest(".one_bus").find(".extendet_worrper")
+		
+			}
+		  
+			});
+  });
 		$(document).delegate(".read_mor", "click", function(e) {
+            debugger;
 		//$(".read_mor").one('click', read_mor_cliclk);
 		read_mor_cliclk(e);
 	

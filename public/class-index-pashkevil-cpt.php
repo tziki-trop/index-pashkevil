@@ -13,16 +13,19 @@ use WP_Query;
         $this->add_wp_actions();
      }
     private function set_business_types(){
-        $this->types['regiler'] =   __( 'regiler', 'carousel_elementor' );
-        $this->types['pro'] =  __( 'pro', 'carousel_elementor' );
-        $this->types['premium'] =  __( 'premium', 'carousel_elementor' );
+        $this->types['regiler'] =   __( 'regiler', 'index-pashkevil' );
+        $this->types['pro'] =  __( 'pro', 'index-pashkevil' );
+        $this->types['premium'] =  __( 'premium', 'index-pashkevil' );
 
 
     } 
     public function get_business_types( $types = [] ){
         return  array_merge($this->types, $types);
     }
+   
     public function add_wp_actions(){
+    add_filter('ajax_l_t_c', [$this,'ajax_l_t_c']);
+    add_shortcode('get_bis_status', [$this,'get_bis_status']);
     add_filter( 'get_business_types', [$this,'get_business_types']);
     add_action( 'init', [$this,'on_init' ]);
     add_action( 'reg_cpts', [$this,'on_init' ]);
@@ -41,16 +44,44 @@ use WP_Query;
     add_action( 'make_bis_pro', [$this,'make_bis_pro'],10,2 );
     add_action( 'make_bis_regiler', [$this,'make_bis_regiler'],10,1 );
     add_action('acf/validate_save_post' , [ $this,'add_user_cpt'], 10, 0 );
-     add_action('delete_empty_cpt',[$this,'delete_cpt'],10,1);
-    //add_action( 'admin_post_nopriv', [$this,'add_user_cpt'],10,1 );
+    add_action('delete_empty_cpt',[$this,'delete_cpt'],10,1);
+    add_action( 'admin_post_nopriv', [$this,'add_user_cpt'],10,1 );
 
-    
+    add_action( 'pre_get_posts',  [ $this, 'example_post_ordering'], 10 );
+
     }
+    public function get_bis_status(){
+        $status =  get_post_meta(get_the_ID(),'business_type', true);
+        return "<p class='status ststus_".$status."'>".$this->types[$status]."</p>";
+    }
+    /**
+ * Modifies query before retrieving posts. Sets the 
+ * `meta_query` and `orderby` param when no `orderby` 
+ * param is set, (default ordering).
+ * 
+ * @param   WP_Query  $query  The full `WP_Query` object.
+ * @return  void
+ */
+function example_post_ordering( $query ) {
+   // if(! is_admin())
+   // return;
+
+if($query->is_main_query() && ! is_admin() && in_array ( $query->get('post_type'), array('business') )){
+    $query->set('orderby','meta_value title');
+    $query->set('meta_key', 'business_type');
+    $query->set('order', 'ASC');
+}
+   
+
+}
+
     public function after_acf_save($post_id){
         if (strpos(wp_get_referer(), 'wp-admin') !== false) {
             acf_reset_validation_errors();
           return;
-        }  
+        } 
+        if(!isset($_POST['acf']['field_5c3dc6dc93b5e'])) 
+        return;
     $userarray = array(
         'user_pass' => $_POST['acf']['field_5c3dc72e06c5e'],
         'user_email' => $_POST['acf']['field_5c3dc6dc93b5e'],
@@ -179,9 +210,13 @@ use WP_Query;
 
     }
     public function acf_pre_save( $post_id ) {
+        if(!isset($_POST['acf']['field_5c3dc6dc93b5e'])){
+        do_action('reg_cpts');
+        update_post_meta($post_id, 'owner', get_current_user_id()) ; 
+        }
         if(get_post_status($post_id) === "publish")
         return $post_id; 
-     
+        
          //var_dump($user->ID);
          $args = array( 
             'post_status' => 'publish',
@@ -195,27 +230,21 @@ use WP_Query;
      //  do_action('acf/save_post', $post_id);
         return $post_id;
     }
-
-    public function send_email_to_client($fields, $ajax_handler){
-        $email = get_post_meta($fields[ 'pid' ] , 'email' , true);
-     /*   Array
-        (
-            [ID] => 6
-            [user_firstname] => John
-            [user_lastname] => Doe
-            [nickname] => johndoe
-            [user_nicename] => johndoe
-            [display_name] => John Doe
-            [user_email] => john.doe@site.com
-            [user_url] => 
-            [user_registered] => 2016-07-03 12:23:56
-            [user_description] => 
-            [user_avatar] => 
-        )*/
-        $data = array_merge($fields, get_post_meta($fields[ 'pid' ]));
-        $user_data = get_field( "owner" , $fields[ 'pid' ] );
-        $data = array_merge( $data , $user_data);
+    public function ajax_l_t_c($fields){
+        $email = get_post_meta((int)$fields[ 'pid' ] , 'email' , true);
+        $data = array_merge($fields, get_post_meta((int)$fields[ 'pid' ]));
+        $user_data = get_field( "owner" ,(int) $fields[ 'pid' ] );
         do_action('send_castum_email_temp','send_messeg',$email,$data);
+        return true;
+    }
+    public function send_email_to_client($fields, $ajax_handler){
+        $email = get_post_meta((int)$fields[ 'pid' ] , 'email' , true);
+  
+        $data = array_merge($fields, get_post_meta((int)$fields[ 'pid' ]));
+        $user_data = get_field( "owner" ,(int) $fields[ 'pid' ] );
+      //  $data = array_merge( $data , $user_data);
+        do_action('send_castum_email_temp','send_messeg',$email,$data);
+        return true;
     }
     public function my_acf_google_map_api( $api ){
 	        //AIzaSyBpBpabON9ZP9otcxyd7eXudE_zNkgT6tQ

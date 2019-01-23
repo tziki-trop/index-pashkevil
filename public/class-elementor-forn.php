@@ -10,10 +10,18 @@ public function __construct(){
      }
     public function add_wp_actions(){
         add_action( 'elementor_pro/forms/validation', [$this,'manegg_form'],10,2 ); 
-
-     }
+        add_action('wp_ajax_l_t_c', [$this,'ajax_l_t_c']);
+        add_action('wp_ajax_admin_l_t_c',[$this, 'ajax_l_t_c']);   
+    }
    
-    
+    public function ajax_l_t_c(){
+       //   echo json_encode($_POST['form_fields']);
+      //  exit;
+   
+        $res =  apply_filters("ajax_l_t_c",$_POST['form_fields']);
+        echo json_encode(array($res));
+        exit;
+    }
     public function manegg_form ( $record, $ajax_handler ) {
         $raw_fields = $record->get( 'fields' );
         $fields = [];   

@@ -17,7 +17,7 @@ public function __construct(){
         }
 
         wp_create_user( $first_name . "_" . $last_name, 'random password here' );
-        wp_create_user($username, $password, $email = '')
+        wp_create_user($username, $password, $email = '');
         // Create a new post
         $post = array(
             'post_status'  => 'draft' ,

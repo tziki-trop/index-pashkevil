@@ -45,36 +45,26 @@ public function point_business() {
       //  echo '//content goes here';    
     }
 public function menu_items( $items ) {
-    $items[ 'business' ] = __( 'העסקים שלי', 'webkul' );
+    $bis = array('business' => __( 'העסקים שלי', 'webkul' ));
+    $items = $bis + $items;
+
     return $items;
 }
 public function on_sub_change_status($order,$status,$old_status){
-    if($status === "active")
-    $bus_type = "pro";
-    else  $bus_type = "regiler";
+    
+      
+
         $items = $order->get_items();
-      //  error_log( print_r($items, TRUE) );
- 
-        foreach ( $order->get_items() as $item ) {
+       foreach ( $order->get_items() as $item ) {
             $product = $item->get_product();
-           error_log( print_r($product, TRUE) );
-
-            $level = $product->get_attribute( 'pa_level' ) ? $product->get_attribute( 'pa_level' ) :  "regiler";
-            error_log( $level );
-
-        $post_id = $item->get_meta('business');
-        update_post_meta((int)$post_id,'business_type' , $level);
-        // $item_meta =   $item->get_meta_data();
-      //   error_log( $post_id );
-
-        }
-     //   error_log($status);
-
-        
-       // $post_id = $order->get_meta('business');
-      //  update_post_meta(1,'test' , 'tt');
-        //get_meta
-    }
+            if($status != "active")
+             $level = "regiler";
+             else
+            $level = $product->get_attribute( 'pa_level' );
+            $post_id = $item->get_meta('business');
+            update_post_meta((int)$post_id,'business_type' , $level);
+       }
+  }
 public function create_custom_field() {
  $args = array(
  'id' => 'business_field',
@@ -102,7 +92,7 @@ public function display_custom_field() {
 
  //var_dump( $business);
  ?>
- <div class="cfwc-custom-field-wrapper"><label for="business_field_input">אנא בחר עסק</label>
+ <div class="cfwc-custom-field-wrapper"><label for="business_field_input">אנא בחר עסק</label><br>
     <select class="castum_bus" id="business_field_input" name="business_field_input">
     <?php
     foreach($business as $id => $title){
@@ -120,8 +110,8 @@ public function display_custom_field() {
 public function validate_custom_field( $passed, $product_id, $quantity ) {
  if( empty( $_POST['business_field_input'] ) ) {
  // Fails validation
- $passed = false;
- wc_add_notice( __( 'אנא בחר עסק', 'cfwc' ), 'error' );
+ //$passed = false;
+ //wc_add_notice( __( 'אנא בחר עסק', 'cfwc' ), 'error' );
  }
  return $passed;
 }

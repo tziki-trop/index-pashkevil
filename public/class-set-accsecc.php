@@ -28,12 +28,12 @@ use WP_Query;
 		$role = $this->get_user_role();
 		if($role === "administrator")
         return;
-        if(is_singular( 'business' )){
-        $user = (int)get_field( 'owner', get_queried_object_id() );
-        if(get_current_user_id() == $user)
-        return;
-        wp_redirect(get_permalink(self::LOGIN_PAGE),301);  
-        }
+      //  if(is_singular( 'business' )){
+      //  $user = (int)get_field( 'owner', get_queried_object_id() );
+      //  if(get_current_user_id() == $user)
+     //   return;
+     //   wp_redirect(get_permalink(self::LOGIN_PAGE),301);  
+      //  }
         if((is_page(self::REGISTER_PAGE) || is_page(self::LOGIN_PAGE)) && is_user_logged_in()){
         wp_redirect(get_permalink(self::ACCOUNT_PAGE));  
         }
